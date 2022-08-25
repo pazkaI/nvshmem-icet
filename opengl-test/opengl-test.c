@@ -3,7 +3,7 @@
 #include "IceT.h"
 #include "IceTMPI.h"
 
-#include <OpenGL/gl.h>
+#include <GL/gl.h>
 
 int main(int argc, char** argv) {
 
