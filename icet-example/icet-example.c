@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include <GL/freeglut.h>
+#include <GL/glut.h>
 #include <GL/gl.h>
 
 #include <IceT.h>
