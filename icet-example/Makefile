@@ -16,10 +16,10 @@ GENCODE_FLAGS := -gencode arch=compute_80,code=sm_80 -gencode arch=compute_80,co
 
 # compiler flags
 MPICXX_FLAGS += -DUSE_NVTX -I$(CUDA_HOME)/include -I$(ICET_HOME)/include -std=c++14
-LD_FLAGS = -L$(CUDA_HOME)/lib64 -lcudart -L$(ICET_HOME)/lib -lIceTCore -lIceTMPI -lIceTGL -lGL -LGLU -Lglut -lnvToolsExt
+LD_FLAGS = -L$(CUDA_HOME)/lib64 -lcudart -L$(ICET_HOME)/lib -lIceTCore -lIceTMPI -lIceTGL -lGL -lGLU -lglut -lnvToolsExt
 
 icet-example: Makefile icet-example.c
-	$(MPICXX) $(MPICXX_FLAGS) icet-example.c -o icet-example $(LD_FLAGS)
+	$(MPICXX) $(MPICXX_FLAGS) icet-example.c $(LD_FLAGS) -o icet-example
 
 .PHONY: clean
 clean:
