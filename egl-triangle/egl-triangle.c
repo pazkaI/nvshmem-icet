@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <assert.h>
 
 #include <unistd.h>
 #include <EGL/egl.h>
