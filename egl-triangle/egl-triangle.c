@@ -49,5 +49,7 @@ int main(int argc, char **argv)
     lseek(dumpbuf_fd, SEEK_SET, 0);
     write(dumpbuf_fd, dumpbuf, width * height * 3);
 
+    eglTerminate(display);
+
     return 0;
 }
