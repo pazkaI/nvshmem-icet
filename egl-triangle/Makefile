@@ -16,7 +16,7 @@ GENCODE_FLAGS := -gencode arch=compute_80,code=sm_80 -gencode arch=compute_80,co
 
 # compiler flags
 MPICXX_FLAGS += -DUSE_NVTX -I$(CUDA_HOME)/include -I$(ICET_HOME)/include -std=c++14
-LD_FLAGS = -L$(CUDA_HOME)/lib64 -lcudart -L$(ICET_HOME)/lib -lIceTCore -lIceTMPI -lIceTGL -lGL -lnvToolsExt
+LD_FLAGS = -L$(CUDA_HOME)/lib64 -lcudart -L$(ICET_HOME)/lib -lIceTCore -lIceTMPI -lIceTGL -lGL -lEGL -lnvToolsExt
 
 egl-triangle: Makefile egl-triangle.c
 	$(MPICXX) $(MPICXX_FLAGS) egl-triangle.c $(LD_FLAGS) -o egl-triangle
