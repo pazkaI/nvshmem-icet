@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include <EGL/egl.h>
 
 static const EGLint configAttribs[] = {
