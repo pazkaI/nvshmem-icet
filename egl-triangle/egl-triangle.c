@@ -1,58 +1,52 @@
-#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
+#include <unistd.h>
 #include <EGL/egl.h>
+#include <GL/gl.h>
 
-static const EGLint configAttribs[] = {
-    EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
-    EGL_BLUE_SIZE, 8,
-    EGL_GREEN_SIZE, 8,
-    EGL_RED_SIZE, 8,
-    EGL_DEPTH_SIZE, 8,
-    EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
+static EGLint const attributeList[] = {
+    EGL_RED_SIZE, 1,
+    EGL_GREEN_SIZE, 1,
+    EGL_BLUE_SIZE, 1,
     EGL_NONE,
 };
 
-static const int pbufferWidth = 9;
-static const int pbufferHeight = 9;
+int const width = 512;
+int const height = 512;
 
-static const EGLint pbufferAttribs[] = {
-    EGL_WIDTH,
-    pbufferWidth,
-    EGL_HEIGHT,
-    pbufferHeight,
-    EGL_NONE,
-};
-
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
-    // 1. Initialize EGL
-    EGLDisplay eglDpy = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 
-    EGLint major, minor;
+    eglInitialize(display, NULL, NULL);
 
-    eglInitialize(eglDpy, &major, &minor);
+    EGLConfig config;
+    EGLint numConfig;
 
-    // 2. Select an appropriate configuration
-    EGLint numConfigs;
-    EGLConfig eglCfg;
+    eglChooseConfig(display, attributeList, &config, 1, &numConfig);
 
-    eglChooseConfig(eglDpy, configAttribs, &eglCfg, 1, &numConfigs);
+    EGLContext context = eglCreateContext(display, config, EGL_NO_CONTEXT, NULL);
 
-    // 3. Create a surface
-    EGLSurface eglSurf = eglCreatePbufferSurface(eglDpy, eglCfg, pbufferAttribs);
+    eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, context);
 
-    // 4. Bind the API
-    eglBindAPI(EGL_OPENGL_API);
+    // draw sth
+    glViewport(0, 0, width, height);
+    glClearColor(1.0, 1.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glFlush();
 
-    // 5. Create a context and make it current
-    EGLContext eglCtx = eglCreateContext(eglDpy, eglCfg, EGL_NO_CONTEXT, NULL);
+    // read pixels to file
+    int dumpbuf_fd = open("/tmp/fbodump.rgb", O_CREAT | O_SYNC | O_RDWR, S_IRUSR | S_IWUSR);
+    assert(-1 != dumpbuf_fd);
+    void *dumpbuf = malloc(width * height * 3);
+    assert(dumpbuf);
 
-    eglMakeCurrent(eglDpy, eglSurf, eglSurf, eglCtx);
+    glReadBuffer(GL_COLOR_ATTACHMENT0);
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, dumpbuf);
+    lseek(dumpbuf_fd, SEEK_SET, 0);
+    write(dumpbuf_fd, dumpbuf, width * height * 3);
 
-    // from now on use your OpenGL context
-    printf("Hello world from EGL");
-
-    // 6. Terminate EGL when finished
-    eglTerminate(eglDpy);
     return 0;
 }
