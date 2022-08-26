@@ -36,10 +36,11 @@ int main(int argc, char **argv)
     glViewport(0, 0, width, height);
     glClearColor(1.0, 1.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
-    glFlush();
+    //glFlush();
 
     // read pixels to file
     int dumpbuf_fd = open("/tmp/fbodump.rgb", O_CREAT | O_SYNC | O_RDWR, S_IRUSR | S_IWUSR);
+    printf("file descriptor %d\n", dumpbuf_fd);
     assert(-1 != dumpbuf_fd);
     void *dumpbuf = malloc(width * height * 3);
     assert(dumpbuf);
